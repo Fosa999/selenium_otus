@@ -27,7 +27,6 @@ def browser(request):
             options.add_argument("--headless=new")
         service = ChromeService()
         driver = webdriver.Chrome(service=service, options=options)
-        driver.maximize_window()
 
     elif browser_name == "ff":
         options = FFOptions()
