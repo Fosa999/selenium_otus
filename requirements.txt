@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 pytest==8.0.0
+=======
+pytest==8.0.0
+>>>>>>> otus_Selenium/hw
 selenium==4.17.2
