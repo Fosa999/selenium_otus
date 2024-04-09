@@ -1,6 +1,4 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from src.base_page import BasePage
 
 
@@ -65,9 +63,6 @@ class AdminPage(BasePage):
     def delete_product(self):
         self.get_element(self.DELETE_PRODUCT).click()
 
-    # def check_title(self):
-    #     self.get_element(self.TITLE)
-
     def check_username_field(self):
         self.get_element(self.USERNAME_FIELD)
 
@@ -87,4 +82,3 @@ class AdminPage(BasePage):
 
     def logout_text(self):
         self.get_element(self.LOGOUT)
-

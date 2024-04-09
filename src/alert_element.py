@@ -21,6 +21,3 @@ class AlertElement(BasePage):
 
     def alert_accept(self):
         self.alert().accept()
-
-    # def alert_dismiss(self):
-    #     self.alert().dismiss()
