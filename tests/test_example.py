@@ -1,119 +1,145 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from src.admin_page import AdminPage
+from src.alert_element import AlertElement
+from src.main_page import MainPage
+from src.catalog_page import CatalogPage
+from src.product_card import ProductCard
+from src.registration_users_page import RegistrationUsersPage
+from src.shopping_cart_page import ShoppingCartPage
 
 ''' Поиск элементов'''
 
 
 def test_main_page_elements(browser):
     browser.get(browser.base_url)
-    browser.find_element(By.XPATH, '//*[text()="Your Store"]')
-    browser.find_element(By.XPATH, '//*[@id="header-cart"]//button')
-    browser.find_element(By.ID, 'carousel-banner-0')
-    browser.find_element(By.NAME, 'search')
-    browser.find_element(By.XPATH, '//*[@id="header-cart"]//button').click()
-    WebDriverWait(browser, timeout=2).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[text()='Your shopping cart is empty!']")))
+    MainPage(browser).find_search()
+    MainPage(browser).find_carusel_banner_product()
+    MainPage(browser).find_carusel_banner_advertising()
+    MainPage(browser).find_the_cart_button()
+    MainPage(browser).click_cart_button()
+    MainPage(browser).find_empty_cart()
 
 
 def test_catalog_page_elements(browser):
     browser.get(browser.base_url + "/catalog/laptop-notebook")
-    browser.find_element(By.XPATH, "//*[@id='product-list']")
-    browser.find_element(By.XPATH, "//*[@id='input-sort']")
-    browser.find_element(By.XPATH, "//*[@id='input-limit']")
-    browser.find_element(By.XPATH, "//*[@id='button-grid']")
-    WebDriverWait(browser, timeout=1).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[text()='Name (A - Z)']")))
+    CatalogPage(browser).check_product_list()
+    CatalogPage(browser).find_element_show_limit()
+    CatalogPage(browser).find_element_grid_button()
+    CatalogPage(browser).find_element_sort_by()
+    CatalogPage(browser).find_element_sort_by_name()
 
 
 def test_product_card_elements(browser):
     browser.get(browser.base_url + "/product/tablet/samsung-galaxy-tab-10-1")
-    browser.find_element(By.XPATH, "//title[text()='Samsung Galaxy Tab 10.1']")
-    browser.find_element(By.XPATH, "//h1[text()='Samsung Galaxy Tab 10.1']")
-    browser.find_element(By.CLASS_NAME, 'price-new')
-    browser.find_element(By.XPATH, "//*[@id='button-cart']")
-    browser.find_element(By.XPATH, "//*[@class='image magnific-popup']")
-    browser.find_element(By.XPATH, "//*[text()='Reviews (0)']").click()
-    WebDriverWait(browser, timeout=1).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[@id='form-review']")))
+    ProductCard(browser).check_header_product_cart()
+    ProductCard(browser).check_price()
+    ProductCard(browser).check_button_add_to_cart()
+    ProductCard(browser).check_image_product()
+    ProductCard(browser).check_reviews()
+    ProductCard(browser).click_review()
+    ProductCard(browser).check_reviews_field()
 
 
 def test_login_admin_page_elements(browser):
     browser.get(browser.base_url + "/administration")
-    browser.find_element(By.XPATH, '//*[text()="Administration"]')
-    browser.find_element(By.XPATH, "//*[@id='input-username']")
-    browser.find_element(By.XPATH, "//*[@id='input-password']")
-    browser.find_element(By.XPATH, "//*[@class='btn btn-primary']").click()
-    WebDriverWait(browser, timeout=2).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[@class='alert alert-danger alert-dismissible']")))
+    AdminPage(browser).check_username_field()
+    AdminPage(browser).check_password_field()
+    AdminPage(browser).check_login_button()
+    AdminPage(browser).click_login_button()
+    AlertElement(browser).admin_alert()
 
 
 def test_register_user_page_elements(browser):
     browser.get(browser.base_url + '/en-gb?route=account/register')
-    browser.find_element(By.XPATH, "//*[@name='firstname']")
-    browser.find_element(By.XPATH, "//*[@name='lastname']")
-    browser.find_element(By.XPATH, "//*[@name='email']")
-    browser.find_element(By.XPATH, "//*[@type='password']")
-    browser.find_element(By.XPATH, "//*[@type='submit']").click()
-    WebDriverWait(browser, 2).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[@class='alert alert-danger alert-dismissible']")))
+    RegistrationUsersPage(browser).check_firstname_field()
+    RegistrationUsersPage(browser).check_lastname_field()
+    RegistrationUsersPage(browser).check_email_field()
+    RegistrationUsersPage(browser).check_password_field()
+    RegistrationUsersPage(browser).check_submit_button()
+    RegistrationUsersPage(browser).click_submit_button()
+    AlertElement(browser).admin_alert()
 
 
 '''Автотесты'''
 
 
-def test_auto_login(browser):
+def test_auto_login_admin_page(browser):
     browser.get(browser.base_url + "/administration")
-    user_field = WebDriverWait(browser, 1).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[@name='username']")))
-    user_field.send_keys("user")
-    password_field = WebDriverWait(browser, 1).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[@name='password']")))
-    password_field.send_keys("bitnami")
-    browser.find_element(By.XPATH, "//*[@type='submit']").click()
-    el = WebDriverWait(browser, 3).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[@id='nav-logout']/a/span")))
-    assert el.text == "Logout", "Пользователь не авторизован"
+    AdminPage(browser).login("user", "bitnami")
+    AdminPage(browser).logout_text()
 
 
 def test_adding_item_to_cart(browser):
     browser.get(browser.base_url)
-    button_cart = browser.find_element(By.XPATH, "//*[@title='Shopping Cart']")
-    button_cart.click()
-    empty = browser.find_element(By.XPATH, "//*[@id='content']/h1").text
-    WebDriverWait(browser, 2).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[@title='Your Store']"))).click()
-    item_add = WebDriverWait(browser, 2).until(EC.visibility_of_element_located(
-        (By.XPATH, '//*[@class="fa-solid fa-shopping-cart"]')))
-    item_add.click()
-    WebDriverWait(browser, 1).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[@class='btn-close']"))).click()
-    WebDriverWait(browser, 2).until(EC.visibility_of_element_located(
-        (By.XPATH, "//*[@title='Shopping Cart']"))).click()
-    filled = browser.find_element(By.XPATH, "//*[@id='content']/h1").text
-    assert empty != filled, "Корзина пуста"
+    MainPage(browser).click_shopping_cart_page()
+    ShoppingCartPage(browser).check_empty_shopping_cart()
+    MainPage(browser).click_your_store()
+    MainPage(browser).click_item_add()
+    AlertElement(browser).close_alert()
+    MainPage(browser).click_shopping_cart_page()
+    ShoppingCartPage(browser).check_cart()
 
 
 def test_check_price_on_main(browser):
     browser.get(browser.base_url)
-    old_prise = []
-    price_dollars = browser.find_elements(By.XPATH, "//*[@class='price']/span")
-    for price_dol in price_dollars:
-        old_prise.append(price_dol.text)
-    browser.find_element(By.XPATH, "//*[text()='Currency']").click()
-    browser.find_element(By.XPATH, "// *[text()='€ Euro']").click()
-    new_price = []
-    price_euro = browser.find_elements(By.XPATH, "//*[@class='price']/span")
-    for price_eu in price_euro:
-        new_price.append(price_eu.text)
-    assert old_prise != new_price, "Валюта не изменилась"
+    price_dollars = MainPage(browser).price_check()
+    MainPage(browser).change_currency_to_eu()
+    price_euro = MainPage(browser).price_check()
+    for old_price, new_price in zip(price_dollars, price_euro):
+        assert old_price != new_price, "Валюта не изменилась"
 
 
 def test_check_price_in_card(browser):
     browser.get(browser.base_url + "/en-gb/product/canon-eos-5d")
-    price_dollar = browser.find_element(By.XPATH, "//*[@class='price-new']").text
-    browser.find_element(By.XPATH, "//*[text()='Currency']").click()
-    browser.find_element(By.XPATH, "// *[text()='€ Euro']").click()
-    price_euro = browser.find_element(By.XPATH, "//*[@class='price-new']").text
-    assert price_euro != price_dollar, "Валюта не изменилась"
+    price_dollar = ProductCard(browser).check_price()
+    MainPage(browser).change_currency_to_eu()
+    price_euro = ProductCard(browser).check_price()
+    for old_price, new_price in zip(price_dollar, price_euro):
+        assert old_price != new_price, "Валюта не изменилась"
+
+
+def test_add_new_product(browser):
+    browser.get(browser.base_url + "/administration")
+    AdminPage(browser).login("user", "bitnami")
+    AdminPage(browser).choose_catalog()
+    AdminPage(browser).choose_products()
+    AdminPage(browser).add_new_product()
+    AdminPage(browser).input_product_name("test")
+    AdminPage(browser).input_meta_tag("test")
+    AdminPage(browser).choose_data()
+    AdminPage(browser).input_model("test")
+    AdminPage(browser).choose_seo()
+    AdminPage(browser).input_seo_keyword("test")
+    AdminPage(browser).save_product()
+    AlertElement(browser).check_succes_modified()
+
+
+def test_del_product(browser):
+    browser.get(browser.base_url + "/administration")
+    AdminPage(browser).login("user", "bitnami")
+    AdminPage(browser).choose_catalog()
+    AdminPage(browser).choose_products()
+    AdminPage(browser).input_product_name("test")
+    AdminPage(browser).apply_filter()
+    AdminPage(browser).click_checkbox()
+    AdminPage(browser).delete_product()
+    AlertElement(browser).alert_accept()
+    AlertElement(browser).check_succes_modified()
+
+
+def test_register_user(browser):
+    browser.get(browser.base_url + "/en-gb?route=account/register")
+    RegistrationUsersPage(browser).input_firstname("test")
+    RegistrationUsersPage(browser).input_lastname("test")
+    RegistrationUsersPage(browser).input_email("test@test.test")
+    RegistrationUsersPage(browser).input_password("test")
+    RegistrationUsersPage(browser).click_checkbox_privaci_policy()
+    RegistrationUsersPage(browser).click_continue_button()
+    RegistrationUsersPage(browser).check_succes_registration()
+
+
+def test_change_currency(browser):
+    browser.get(browser.base_url)
+    MainPage(browser).change_currency_to_eu()
+    MainPage(browser).change_currency_to_ster()
+    MainPage(browser).change_currency_to_dol()
 
