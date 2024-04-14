@@ -10,9 +10,6 @@ class AlertElement(BasePage):
     def admin_alert(self):
         self.get_element(self.ALERT)
 
-    # def click_alert(self):
-    #     self.get_element(self.ALERT).click()
-
     def close_alert(self):
         self.get_element(self.CLOSE_ALERT).click()
 

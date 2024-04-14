@@ -47,8 +47,7 @@ class RegistrationUsersPage(BasePage):
         self.get_element(self.CHECKBOX).click()
 
     def click_continue_button(self):
-        self.get_element(self.CONTINUE_BUTTON, 1).click()
+        self.get_element(self.CONTINUE_BUTTON, 3).click()
 
     def check_succes_registration(self):
-        self.get_element(self.SUCCESS_REGISTRATION)
-
+        self.get_element(self.SUCCESS_REGISTRATION, 3)
