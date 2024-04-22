@@ -5,10 +5,13 @@ from src.catalog_page import CatalogPage
 from src.product_card import ProductCard
 from src.registration_users_page import RegistrationUsersPage
 from src.shopping_cart_page import ShoppingCartPage
+import allure
 
 ''' Поиск элементов'''
 
 
+@allure.story('Проверка наличия элементов')
+@allure.title('Главная страница')
 def test_main_page_elements(browser):
     browser.get(browser.base_url)
     main_page = MainPage(browser, browser)
@@ -21,6 +24,8 @@ def test_main_page_elements(browser):
     main_page.find_empty_cart()
 
 
+@allure.story('Проверка наличия элементов')
+@allure.title('Каталог')
 def test_catalog_page_elements(browser):
     browser.get(browser.base_url + "/catalog/laptop-notebook")
     catalog_page = CatalogPage(browser, browser)
@@ -32,6 +37,8 @@ def test_catalog_page_elements(browser):
     catalog_page.find_element_sort_by_name()
 
 
+@allure.story('Проверка наличия элементов')
+@allure.title('Карточка товара')
 def test_product_card_elements(browser):
     browser.get(browser.base_url + "/product/tablet/samsung-galaxy-tab-10-1")
     product_card = ProductCard(browser, browser)
@@ -45,6 +52,8 @@ def test_product_card_elements(browser):
     product_card.check_reviews_field()
 
 
+@allure.story('Проверка наличия элементов')
+@allure.title('Страница авторизации в админку')
 def test_login_admin_page_elements(browser):
     browser.get(browser.base_url + "/administration")
     admin_page = AdminPage(browser, browser)
@@ -57,6 +66,8 @@ def test_login_admin_page_elements(browser):
     alert_element.admin_alert()
 
 
+@allure.story('Проверка наличия элементов')
+@allure.title('Страница регистрации нового бользователя')
 def test_register_user_page_elements(browser):
     browser.get(browser.base_url + '/en-gb?route=account/register')
     register_user_page = RegistrationUsersPage(browser, browser)
@@ -74,6 +85,8 @@ def test_register_user_page_elements(browser):
 '''Автотесты'''
 
 
+@allure.story('Сценарий администратора')
+@allure.title('Авторизация администратором')
 def test_auto_login_admin_page(browser):
     browser.get(browser.base_url + "/administration")
     admin_page = AdminPage(browser, browser)
@@ -82,9 +95,11 @@ def test_auto_login_admin_page(browser):
     admin_page.logout_text()
 
 
+@allure.story('Сценарий пользователя')
+@allure.title('Добавления товара в корзину')
 def test_adding_item_to_cart(browser):
     browser.get(browser.base_url)
-    main_page = MainPage(browser,browser)
+    main_page = MainPage(browser, browser)
     shopping_cart = ShoppingCartPage(browser, browser)
 
     main_page.click_shopping_cart_page()
@@ -96,6 +111,8 @@ def test_adding_item_to_cart(browser):
     shopping_cart.check_cart()
 
 
+@allure.story('Сценарий пользователя')
+@allure.title('Проверка изменения стоимости у товаров при переключении валюты с доллара на евро')
 def test_check_price_on_main(browser):
     browser.get(browser.base_url)
     main_page = MainPage(browser, browser)
@@ -107,6 +124,8 @@ def test_check_price_on_main(browser):
         assert old_price != new_price, "Валюта не изменилась"
 
 
+@allure.story('Сценарий пользователя')
+@allure.title('Проверка изменения стоимости в карточке товара при переключении валюты с доллара на евро')
 def test_check_price_in_card(browser):
     browser.get(browser.base_url + "/en-gb/product/canon-eos-5d")
     main_page = MainPage(browser, browser)
@@ -119,6 +138,8 @@ def test_check_price_in_card(browser):
         assert old_price != new_price, "Валюта не изменилась"
 
 
+@allure.story('Сценарий администратора')
+@allure.title('Добавление новой карточки товара')
 def test_add_new_product(browser):
     browser.get(browser.base_url + "/administration")
     admin_page = AdminPage(browser, browser)
@@ -138,6 +159,8 @@ def test_add_new_product(browser):
     alert_element.check_succes_modified()
 
 
+@allure.story('Сценарий администратора')
+@allure.title('Удаление существующей карточки товара')
 def test_del_product(browser):
     browser.get(browser.base_url + "/administration")
     admin_page = AdminPage(browser, browser)
@@ -154,6 +177,8 @@ def test_del_product(browser):
     alert_element.check_succes_modified()
 
 
+@allure.story('Сценарий пользователя')
+@allure.title('Регистрация нового пользователя')
 def test_register_user(browser):
     browser.get(browser.base_url + "/en-gb?route=account/register")
     register_user_page = RegistrationUsersPage(browser, browser)
@@ -167,6 +192,8 @@ def test_register_user(browser):
     register_user_page.check_succes_registration()
 
 
+@allure.story('Сценарий пользователя')
+@allure.title('Изменение валюты')
 def test_change_currency(browser):
     browser.get(browser.base_url)
     main_page = MainPage(browser, browser)
@@ -174,4 +201,3 @@ def test_change_currency(browser):
     main_page.change_currency_to_eu()
     main_page.change_currency_to_ster()
     main_page.change_currency_to_dol()
-
